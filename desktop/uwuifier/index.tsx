@@ -78,7 +78,7 @@ function handleSwears(text: string, mode: string) {
     return text;
 }
 
-const FACES = ["owo", "uwu", ">w<", "^w^", "OwO", "UwU", "(・`ω´・)", ":3", "x3", "nyaa~", "rawr x3", "(˘ω˘)", "ʘwʘ", "( ᵘ ꒳ ᵘ ✼)"];
+const FACES = ["owo", ":3", ">w<", "^w^", "OwO", ":3", "(・`ω´・)", ":3", "x3", "nyaa~", "rawr x3", "(˘ω˘)", "ʘwʘ", "( ᵘ ꒳ ᵘ ✼)"];
 const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
 
 // Bits of a message that must survive untouched: code, links, mentions,
