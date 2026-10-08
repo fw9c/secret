@@ -1,0 +1,15 @@
+{
+    "name": "Uwuifier",
+    "description": "Turns evewything yuw send into owo/uwu speak >w< (toggle with /uwutoggle)",
+    "authors": [
+        {
+            "name": "you",
+            "id": "0"
+        }
+    ],
+    "main": "index.js",
+    "vendetta": {
+        "icon": "ic_message_edit"
+    },
+    "hash": "193ef84b1e8b63d90c4b85244751084c6ad84c5164fe3982eb263bafdfeb1f02"
+}
