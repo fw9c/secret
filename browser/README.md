@@ -13,11 +13,9 @@ phone with stuff straight from the Play Store.
 4. Go to `discord.com/app` and log in. If it keeps nagging you to get the app,
    turn on "Desktop site" in the Firefox menu.
 
-The pink **uwu** tab on the right edge turns it on and off (faded and crossed
-out = off). On a keyboard, Ctrl+Shift+U does the same.
-
-To change swear mode / stutter / faces, edit the settings at the top of the
-script in Violentmonkey.
+Tap the pink **uwu** tab on the right edge for settings: on/off, edits,
+stutter and face sliders, swear mode. They save automatically and survive
+updates. Faded and crossed out tab = off. On a keyboard, Ctrl+Shift+U toggles.
 
 ## Limits
 

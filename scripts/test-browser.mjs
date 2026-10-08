@@ -13,8 +13,7 @@ class FakeXHR {
 const fetched = [];
 const store = new Map();
 const listeners = {};
-const body = { appendChild: el => { body.child = el; } };
-const fakeEl = () => ({ style: {}, addEventListener(t, f) { this["on" + t] = f; } });
+const body = { appendChild() {} };
 
 const window = {
     XMLHttpRequest: FakeXHR,
@@ -22,8 +21,8 @@ const window = {
     localStorage: { getItem: k => store.get(k) ?? null, setItem: (k, v) => store.set(k, v) },
 };
 const document = {
-    body,
-    createElement: fakeEl,
+    body: null,
+    createElement: () => { throw new Error("no DOM in this test"); },
     addEventListener: (t, f) => { listeners[t] = f; },
 };
 new Function("window", "document", "XMLHttpRequest", src)(window, document, FakeXHR);
@@ -49,12 +48,12 @@ assert.equal(JSON.parse(xhr("POST", `${API}/messages`, fd).get("payload_json")).
 await window.fetch(`${API}/messages`, { method: "POST", body: '{"content":"really"}' });
 assert.equal(JSON.parse(fetched.at(-1).init.body).content, "weawwy");
 
-// toggle via the bubble, persists
-assert.ok(body.child, "bubble not added");
-body.child.onclick({ preventDefault() {}, stopPropagation() {} });
-assert.equal(store.get("uwuifier-active"), "0");
+// Ctrl+Shift+U toggles and the setting persists
+const ctrlShiftU = { ctrlKey: true, shiftKey: true, altKey: false, code: "KeyU", preventDefault() {}, stopPropagation() {} };
+listeners.keydown(ctrlShiftU);
+assert.equal(JSON.parse(store.get("uwuifier-settings")).active, false);
 assert.equal(JSON.parse(xhr("POST", `${API}/messages`, '{"content":"really"}')).content, "really");
-listeners.keydown({ ctrlKey: true, shiftKey: true, altKey: false, code: "KeyU", preventDefault() {}, stopPropagation() {} });
+listeners.keydown(ctrlShiftU);
 assert.equal(JSON.parse(xhr("POST", `${API}/messages`, '{"content":"really"}')).content, "weawwy");
 
 Math.random = origRandom;

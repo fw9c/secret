@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Uwuifier for Discord
 // @namespace    https://github.com/fw9c/secret
-// @version      1.0.1
+// @version      1.1.0
 // @description  Turns evewything yuw send on Discord web into owo/uwu speak >w<
 // @match        https://discord.com/*
 // @match        https://ptb.discord.com/*
@@ -15,21 +15,30 @@
  * Discord's API, so it works in any browser with a userscript extension
  * (Firefox for Android + Violentmonkey on a phone).
  *
- * Toggle: the pink "uwu" bubble on the right edge, or Ctrl+Shift+U on a keyboard.
+ * Settings: tap the pink "uwu" tab on the right edge. Ctrl+Shift+U toggles on a keyboard.
  */
 (() => {
     "use strict";
 
-    // ---- settings, edit these if you want -----------------------------------
-    const SWEAR_MODE = "cute";   // "cute" (fuck -> fwick), "keep", or "censor" (f***)
-    const STUTTER_CHANCE = 0.1;  // 0 to 1
-    const FACE_CHANCE = 0.5;     // 0 to 1
-    const EDITS_TOO = true;      // uwuify edited messages too
+    // ---- settings (change them from the pink "uwu" tab) ------------------------
+    const DEFAULTS = {
+        active: true,
+        swears: "cute",   // "cute" (fuck -> fwick), "keep", or "censor" (f***)
+        stutter: 0.1,     // 0 to 1
+        faces: 0.5,       // 0 to 1
+        editsToo: true,   // uwuify edited messages too
+    };
 
     // Discord deletes window.localStorage once it loads, so grab it first.
     const LS = (() => { try { return window.localStorage; } catch { return null; } })();
-    const KEY = "uwuifier-active";
-    let active = (() => { try { return LS ? LS.getItem(KEY) !== "0" : true; } catch { return true; } })();
+    const KEY = "uwuifier-settings";
+    const cfg = Object.assign({}, DEFAULTS, (() => {
+        try { return JSON.parse(LS && LS.getItem(KEY)) || {}; } catch { return {}; }
+    })());
+
+    function save() {
+        try { LS && LS.setItem(KEY, JSON.stringify(cfg)); } catch { }
+    }
 
     // ---- uwu rules (same as desktop/uwuifier/index.tsx) ----------------------
     // Stems, so "fucking", "bullshit", "motherfucker" etc. are caught too.
@@ -74,7 +83,7 @@
     }
 
     function uwuText(text, faceChance, stutterChance) {
-        let out = handleSwears(text, SWEAR_MODE)
+        let out = handleSwears(text, cfg.swears)
             .replace(/\b(you)\b/gi, m => keepCase(m, "yuw"))
             .replace(/\b(the)\b/gi, m => keepCase(m, "da"))
             .replace(/\b(love)\b/gi, m => keepCase(m, "wuv"))
@@ -105,18 +114,19 @@
     }
 
     function uwuify(content) {
+        const { faces, stutter } = cfg;
         let result = "";
         let last = 0;
         PROTECTED.lastIndex = 0;
         let match;
         while ((match = PROTECTED.exec(content)) !== null) {
-            result += uwuText(content.slice(last, match.index), FACE_CHANCE, STUTTER_CHANCE) + match[0];
+            result += uwuText(content.slice(last, match.index), faces, stutter) + match[0];
             last = match.index + match[0].length;
         }
-        result += uwuText(content.slice(last), FACE_CHANCE, STUTTER_CHANCE);
+        result += uwuText(content.slice(last), faces, stutter);
 
         // always end on a face if nothing got added and the message has words in it
-        if (FACE_CHANCE > 0 && /[a-z]/i.test(result) && !FACES.some(f => result.includes(f)) && Math.random() < FACE_CHANCE) {
+        if (faces > 0 && /[a-z]/i.test(result) && !FACES.some(f => result.includes(f)) && Math.random() < faces) {
             result = result.trimEnd() + " " + pick(FACES);
         }
         return result;
@@ -127,11 +137,11 @@
     const EDIT = /\/api\/v\d+\/channels\/\d+\/messages\/\d+(\?|$)/;
 
     function shouldRewrite(method, url) {
-        if (!active) return false;
+        if (!cfg.active) return false;
         method = String(method || "GET").toUpperCase();
         url = String(url);
         if (method === "POST" && SEND.test(url)) return true;
-        if (method === "PATCH" && EDIT.test(url)) return EDITS_TOO;
+        if (method === "PATCH" && EDIT.test(url)) return cfg.editsToo;
         return false;
     }
 
@@ -183,34 +193,118 @@
         };
     }
 
-    // ---- toggle --------------------------------------------------------------
+    // ---- tab + settings panel -------------------------------------------------
     let bubble = null;
+    let panel = null;
+    let syncPanel = () => { };
 
-    function paint() {
-        if (!bubble) return;
-        bubble.textContent = "uwu";
-        bubble.style.opacity = active ? "0.9" : "0.35";
-        bubble.style.textDecoration = active ? "none" : "line-through";
-        bubble.title = active ? "UwU mode ON (tap to turn off)" : "UwU mode off (tap to turn on)";
+    function el(tag, style, props) {
+        const e = document.createElement(tag);
+        Object.assign(e.style, style || {});
+        Object.assign(e, props || {});
+        return e;
     }
 
-    function toggle() {
-        active = !active;
-        try { LS && LS.setItem(KEY, active ? "1" : "0"); } catch { }
+    // Keep taps inside our UI from reaching Discord's own handlers.
+    function shield(e) {
+        for (const t of ["click", "mousedown", "pointerdown", "touchstart", "keydown"])
+            e.addEventListener(t, ev => ev.stopPropagation());
+    }
+
+    function paint() {
+        if (bubble) {
+            bubble.textContent = "uwu";
+            bubble.style.opacity = cfg.active ? "0.9" : "0.35";
+            bubble.style.textDecoration = cfg.active ? "none" : "line-through";
+            bubble.title = "Uwuifier settings";
+        }
+        syncPanel();
+    }
+
+    function setActive(on) {
+        cfg.active = on;
+        save();
         paint();
+    }
+
+    function slider(label, key) {
+        const row = el("label", { display: "block", margin: "10px 0 0" });
+        const text = el("div", { marginBottom: "4px" });
+        const input = el("input", { width: "100%", accentColor: "#ff73c6" }, { type: "range", min: "0", max: "1", step: "0.05" });
+        const show = () => { text.textContent = `${label}: ${Math.round(cfg[key] * 100)}%`; };
+        input.addEventListener("input", () => { cfg[key] = Number(input.value); show(); save(); });
+        row.appendChild(text);
+        row.appendChild(input);
+        return { row, sync: () => { input.value = String(cfg[key]); show(); } };
+    }
+
+    function checkbox(label, key, onChange) {
+        const row = el("label", { display: "flex", alignItems: "center", gap: "8px", margin: "10px 0 0" });
+        const input = el("input", { width: "20px", height: "20px", accentColor: "#ff73c6" }, { type: "checkbox" });
+        input.addEventListener("change", () => onChange ? onChange(input.checked) : (cfg[key] = input.checked, save()));
+        row.appendChild(input);
+        row.appendChild(el("span", {}, { textContent: label }));
+        return { row, sync: () => { input.checked = !!cfg[key]; } };
+    }
+
+    function buildPanel() {
+        panel = el("div", {
+            position: "fixed", right: "44px", top: "20%", zIndex: "2147483647",
+            width: "240px", maxWidth: "calc(100vw - 60px)", padding: "12px 14px",
+            background: "#2b2d31", color: "#f2f3f5", font: "14px sans-serif",
+            borderRadius: "12px", border: "2px solid #ff73c6", boxShadow: "0 4px 16px rgba(0,0,0,.5)",
+            display: "none",
+        });
+        shield(panel);
+
+        panel.appendChild(el("div", { fontWeight: "800", fontSize: "16px", color: "#ff73c6" }, { textContent: "Uwuifier" }));
+
+        const on = checkbox("Uwuify my messages", "active", setActive);
+        const edits = checkbox("Uwuify edits too", "editsToo");
+        const stutter = slider("Stutter", "stutter");
+        const faces = slider("Faces (owo, >w<, :3)", "faces");
+
+        const swearRow = el("label", { display: "block", margin: "10px 0 0" });
+        swearRow.appendChild(el("div", { marginBottom: "4px" }, { textContent: "Swear words" }));
+        const swears = el("select", { width: "100%", padding: "4px", background: "#1e1f22", color: "#f2f3f5", border: "1px solid #555", borderRadius: "6px" });
+        for (const [value, text] of [["cute", "Cute-ify (fuck → fwick)"], ["keep", "Leave as-is"], ["censor", "Censor (f***)"]])
+            swears.appendChild(el("option", {}, { value, textContent: text }));
+        swears.addEventListener("change", () => { cfg.swears = swears.value; save(); });
+        swearRow.appendChild(swears);
+
+        const close = el("button", {
+            marginTop: "12px", width: "100%", padding: "8px", border: "0", borderRadius: "8px",
+            background: "#ff73c6", color: "#fff", fontWeight: "800", cursor: "pointer",
+        }, { textContent: "Done", type: "button" });
+        close.addEventListener("click", () => { panel.style.display = "none"; });
+
+        for (const part of [on, edits, stutter, faces]) panel.appendChild(part.row);
+        panel.appendChild(swearRow);
+        panel.appendChild(close);
+
+        syncPanel = () => {
+            for (const part of [on, edits, stutter, faces]) part.sync();
+            swears.value = cfg.swears;
+        };
+        document.body.appendChild(panel);
     }
 
     function addBubble() {
         if (bubble || !document.body) return;
-        bubble = document.createElement("div");
-        Object.assign(bubble.style, {
+        bubble = el("div", {
             position: "fixed", right: "0", top: "35%", zIndex: "2147483647",
             background: "#ff73c6", color: "#fff", font: "800 12px sans-serif",
             padding: "8px 6px", borderRadius: "10px 0 0 10px", cursor: "pointer",
             userSelect: "none", boxShadow: "0 2px 6px rgba(0,0,0,.4)",
         });
-        bubble.addEventListener("click", e => { e.preventDefault(); e.stopPropagation(); toggle(); });
+        shield(bubble);
+        bubble.addEventListener("click", e => {
+            e.preventDefault();
+            panel.style.display = panel.style.display === "none" ? "block" : "none";
+            paint();
+        });
         document.body.appendChild(bubble);
+        buildPanel();
         paint();
     }
 
@@ -218,7 +312,7 @@
         if (e.ctrlKey && e.shiftKey && !e.altKey && e.code === "KeyU") {
             e.preventDefault();
             e.stopPropagation();
-            toggle();
+            setActive(!cfg.active);
         }
     }, true);
 
