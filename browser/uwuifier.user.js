@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Uwuifier for Discord
 // @namespace    https://github.com/fw9c/secret
-// @version      1.2.0
+// @version      1.2.1
 // @description  Turns evewything yuw send on Discord web into owo/uwu speak >w<
 // @match        https://discord.com/*
 // @match        https://ptb.discord.com/*
@@ -15,7 +15,7 @@
  * Discord's API, so it works in any browser with a userscript extension
  * (Firefox for Android + Violentmonkey on a phone).
  *
- * Pink "uwu" tab on the right edge: tap = on/off, hold 1s = settings.
+ * Pink "uwu" tab on the right edge: tap = on/off, hold 3s = settings.
  * Ctrl+Shift+U toggles on a keyboard.
  */
 (() => {
@@ -195,7 +195,7 @@
     }
 
     // ---- tab + settings panel -------------------------------------------------
-    const HOLD_MS = 1000; // how long to hold the tab to open settings
+    const HOLD_MS = 3000; // how long to hold the tab to open settings
     let bubble = null;
     let panel = null;
     let syncPanel = () => { };

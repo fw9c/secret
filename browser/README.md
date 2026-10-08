@@ -14,7 +14,7 @@ phone with stuff straight from the Play Store.
    turn on "Desktop site" in the Firefox menu.
 
 Pink **uwu** tab on the right edge: **tap** to turn it on/off, **hold for
-1 second** for settings (edits, stutter and face sliders, swear mode). They save automatically and survive updates. Faded and crossed out tab = off. On a keyboard, Ctrl+Shift+U toggles.
+3 seconds** for settings (edits, stutter and face sliders, swear mode). They save automatically and survive updates. Faded and crossed out tab = off. On a keyboard, Ctrl+Shift+U toggles.
 
 ## Limits
 
