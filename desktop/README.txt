@@ -12,7 +12,7 @@ ON/OFF
 
 SETTINGS (cog icon on the plugin)
   - Swear words: cute-ify (fuck -> fwick, shit -> poopy) / leave as-is / censor (f***)
-  - Stutter chance, face chance (owo, >w<, :3 ...), uwuify edits too
+  - Stutter chance, face chance (:3, >w<, nyaa~ ...), uwuify edits too
 
 INSTALL
   Custom plugins only work on a Vencord built from source, so normal Vencord can't just load this file.

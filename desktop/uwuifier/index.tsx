@@ -29,7 +29,7 @@ const settings = definePluginSettings({
     },
     faces: {
         type: OptionType.SLIDER,
-        description: "Chance a face (owo, >w<, ...) gets added after a sentence",
+        description: "Chance a face (:3, >w<, ...) gets added after a sentence",
         markers: [0, 0.25, 0.5, 0.75, 1],
         default: 0.5,
         stickToMarkers: false,
@@ -78,7 +78,7 @@ function handleSwears(text: string, mode: string) {
     return text;
 }
 
-const FACES = ["owo", ":3", ">w<", "^w^", "OwO", ":3", "(・`ω´・)", ":3", "x3", "nyaa~", "rawr x3", "(˘ω˘)", "ʘwʘ", "( ᵘ ꒳ ᵘ ✼)"];
+const FACES = [":3", ":3", ">w<", "^w^", ":3", ":3", "(・`ω´・)", ":3", "x3", "nyaa~", "rawr x3", "(˘ω˘)", "ʘwʘ", "( ᵘ ꒳ ᵘ ✼)"];
 const pick = <T,>(arr: T[]) => arr[Math.floor(Math.random() * arr.length)];
 
 // Bits of a message that must survive untouched: code, links, mentions,

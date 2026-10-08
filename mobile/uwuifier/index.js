@@ -33,7 +33,7 @@
         [/\bwtf\b/gi, "wtfwick"],
     ];
 
-    const FACES = ["owo", ":3", ">w<", "^w^", "OwO", ":3", "(・`ω´・)", ":3", "x3", "nyaa~", "rawr x3", "(˘ω˘)", "ʘwʘ", "( ᵘ ꒳ ᵘ ✼)"];
+    const FACES = [":3", ":3", ">w<", "^w^", ":3", ":3", "(・`ω´・)", ":3", "x3", "nyaa~", "rawr x3", "(˘ω˘)", "ʘwʘ", "( ᵘ ꒳ ᵘ ✼)"];
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
     // Bits of a message that must survive untouched: code, links, mentions,
@@ -245,7 +245,7 @@
                 })),
             radioGroup("Swear words", "swears", SWEAR_MODES.map(([v, l]) => [l, v])),
             radioGroup("Stutter chance (s-s-stutter)", "stutter", CHANCES),
-            radioGroup("Face chance (owo, >w<, ...)", "faces", CHANCES));
+            radioGroup("Face chance (:3, >w<, ...)", "faces", CHANCES));
     }
 
     return { onLoad, onUnload, settings: Settings, uwuify };

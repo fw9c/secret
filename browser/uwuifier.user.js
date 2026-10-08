@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Uwuifier for Discord
 // @namespace    https://github.com/fw9c/secret
-// @version      1.2.1
+// @version      1.2.2
 // @description  Turns evewything yuw send on Discord web into owo/uwu speak >w<
 // @match        https://discord.com/*
 // @match        https://ptb.discord.com/*
@@ -58,7 +58,7 @@
         [/\bwtf\b/gi, "wtfwick"],
     ];
 
-    const FACES = ["owo", ":3", ">w<", "^w^", "OwO", ":3", "(・`ω´・)", ":3", "x3", "nyaa~", "rawr x3", "(˘ω˘)", "ʘwʘ", "( ᵘ ꒳ ᵘ ✼)"];
+    const FACES = [":3", ":3", ">w<", "^w^", ":3", ":3", "(・`ω´・)", ":3", "x3", "nyaa~", "rawr x3", "(˘ω˘)", "ʘwʘ", "( ᵘ ꒳ ᵘ ✼)"];
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
     // Bits of a message that must survive untouched: code, links, mentions,
@@ -264,7 +264,7 @@
         const on = checkbox("Uwuify my messages", "active", setActive);
         const edits = checkbox("Uwuify edits too", "editsToo");
         const stutter = slider("Stutter", "stutter");
-        const faces = slider("Faces (owo, >w<, :3)", "faces");
+        const faces = slider("Faces (:3, >w<, nyaa~)", "faces");
 
         const swearRow = el("label", { display: "block", margin: "10px 0 0" });
         swearRow.appendChild(el("div", { marginBottom: "4px" }, { textContent: "Swear words" }));
