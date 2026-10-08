@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Uwuifier for Discord
 // @namespace    https://github.com/fw9c/secret
-// @version      1.1.0
+// @version      1.2.0
 // @description  Turns evewything yuw send on Discord web into owo/uwu speak >w<
 // @match        https://discord.com/*
 // @match        https://ptb.discord.com/*
@@ -15,7 +15,8 @@
  * Discord's API, so it works in any browser with a userscript extension
  * (Firefox for Android + Violentmonkey on a phone).
  *
- * Settings: tap the pink "uwu" tab on the right edge. Ctrl+Shift+U toggles on a keyboard.
+ * Pink "uwu" tab on the right edge: tap = on/off, hold 1s = settings.
+ * Ctrl+Shift+U toggles on a keyboard.
  */
 (() => {
     "use strict";
@@ -194,6 +195,7 @@
     }
 
     // ---- tab + settings panel -------------------------------------------------
+    const HOLD_MS = 1000; // how long to hold the tab to open settings
     let bubble = null;
     let panel = null;
     let syncPanel = () => { };
@@ -216,7 +218,7 @@
             bubble.textContent = "uwu";
             bubble.style.opacity = cfg.active ? "0.9" : "0.35";
             bubble.style.textDecoration = cfg.active ? "none" : "line-through";
-            bubble.title = "Uwuifier settings";
+            bubble.title = (cfg.active ? "UwU mode ON" : "UwU mode off") + " (tap to toggle, hold for settings)";
         }
         syncPanel();
     }
@@ -295,13 +297,39 @@
             position: "fixed", right: "0", top: "35%", zIndex: "2147483647",
             background: "#ff73c6", color: "#fff", font: "800 12px sans-serif",
             padding: "8px 6px", borderRadius: "10px 0 0 10px", cursor: "pointer",
-            userSelect: "none", boxShadow: "0 2px 6px rgba(0,0,0,.4)",
+            userSelect: "none", webkitUserSelect: "none", webkitTouchCallout: "none",
+            touchAction: "none", transition: "transform .15s", boxShadow: "0 2px 6px rgba(0,0,0,.4)",
         });
         shield(bubble);
+
+        // Tap = on/off, hold = settings.
+        let timer = null;
+        let held = false;
+        const cancel = () => {
+            clearTimeout(timer);
+            timer = null;
+            bubble.style.transform = "";
+        };
+        bubble.addEventListener("pointerdown", () => {
+            held = false;
+            bubble.style.transform = "scale(1.15)";
+            timer = setTimeout(() => {
+                held = true;
+                cancel();
+                panel.style.display = "block";
+                paint();
+            }, HOLD_MS);
+        });
+        for (const t of ["pointerup", "pointercancel", "pointerleave"]) bubble.addEventListener(t, cancel);
+        // stop the long-press text menu / selection on phones
+        bubble.addEventListener("contextmenu", e => e.preventDefault());
         bubble.addEventListener("click", e => {
             e.preventDefault();
-            panel.style.display = panel.style.display === "none" ? "block" : "none";
-            paint();
+            if (held) {
+                held = false;
+                return;
+            }
+            setActive(!cfg.active);
         });
         document.body.appendChild(bubble);
         buildPanel();

@@ -13,9 +13,8 @@ phone with stuff straight from the Play Store.
 4. Go to `discord.com/app` and log in. If it keeps nagging you to get the app,
    turn on "Desktop site" in the Firefox menu.
 
-Tap the pink **uwu** tab on the right edge for settings: on/off, edits,
-stutter and face sliders, swear mode. They save automatically and survive
-updates. Faded and crossed out tab = off. On a keyboard, Ctrl+Shift+U toggles.
+Pink **uwu** tab on the right edge: **tap** to turn it on/off, **hold for
+1 second** for settings (edits, stutter and face sliders, swear mode). They save automatically and survive updates. Faded and crossed out tab = off. On a keyboard, Ctrl+Shift+U toggles.
 
 ## Limits
 
