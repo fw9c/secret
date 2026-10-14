@@ -4,7 +4,7 @@ Everything you send on Discord gets turned into cat boy speak the moment you hit
 Pings, links, `code`, :emojis: and @everyone are left alone so they still work.
 
   "Hello there, I am so tired. Thank you guys, see you tomorrow!"
-    ->  "hiii there~ i am soo tired mrrp thank u guys, see u tomorrow!! nya~"
+    ->  "hewwo there~ i am soo eepy mrrp tank u guys, see u tomorrow!! nya~"
 
 ON/OFF
   - Pink "fm" button in the chat bar (red line through it = off)

@@ -40,13 +40,14 @@ store.stutter = 0; store.faces = 0;
 Math.random = () => 0.99; // full stops get dropped rather than turned into ~
 
 const send = c => { const m = { content: c }; MessageActions.sendMessage("1", m); return m.content; };
-assert.equal(send("Hello there, I really love this game!"), "hiii there, i really love this game!!");
-assert.equal(send("Fuck this https://example.com/Really <@123> :Heart: lol"), "fuck this https://example.com/Really <@123> :Heart: lol");
+assert.equal(send("Hello there, I really love this game!"), "hewwo there, i really wuv dis game!!");
+assert.equal(send("Fuck this https://example.com/Really <@123> :Heart: lol"), "fuck dis https://example.com/Really <@123> :Heart: lol");
 assert.equal(send("`Real Code` stays"), "`Real Code` stays");
-assert.equal(send("Thank you, I am tired. Is it OK?"), "thank u, i am tired is it ok?");
+assert.equal(send("Thank you, I am tired. Is it OK?"), "tank u, i am eepy is it okie?");
+assert.equal(send("Sorry, what is that? My cat is perfect"), "sowwy, wat is dat? my kitty is purrfect");
 
 const edit = c => { const m = { content: c }; MessageActions.editMessage("1", "2", m); return m.content; };
-assert.equal(edit("Hello"), "hiii");
+assert.equal(edit("Hello"), "hewwo");
 store.editsToo = false;
 assert.equal(edit("Hello"), "Hello");
 
@@ -56,10 +57,10 @@ assert.equal(send("Hello"), "Hello");
 
 // /fm works while off, and is not changed twice when on
 const out = cmds.find(c => c.name === "fm").execute([{ name: "text", value: "Hello", type: 3 }], {});
-assert.equal(out.content, "hiii");
+assert.equal(out.content, "hewwo");
 store.active = true;
 const out2 = cmds.find(c => c.name === "fm").execute([{ name: "text", value: "I love you", type: 3 }], {});
-assert.equal(send(out2.content), "i love u");
+assert.equal(send(out2.content), "i wuv u");
 
 store.swears = "censor";
 assert.equal(send("shit"), "s***");

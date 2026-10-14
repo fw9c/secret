@@ -18,17 +18,57 @@ const SWEARS = [
     [/\bwtf\b/g, "wth"],
 ];
 
-// Light touch on purpose. Runs on lowercased text, so no /i needed.
+// Whole-word swaps, in order (so "thank you" goes before "you").
+// Runs on lowercased text, so no /i needed.
 const WORDS = [
-    [/\b(?:hi+|hello+)\b/g, "hiii"],
+    // greetings
+    [/\bhello+\b/g, "hewwo"],
+    [/\bhi+\b/g, "hiii"],
     [/\bhe+y+\b/g, "heyyy"],
-    [/\bbye+\b/g, "byee"],
-    [/\bso\b/g, "soo"],
-    [/\bomg\b/g, "omgg"],
-    [/\bplease\b/g, "pls"],
+    [/\bbye+\b/g, "bai bai"],
+    [/\bgood ?night\b/g, "nini"],
+    [/\bgood ?morning\b/g, "mowning"],
+    // you / thanks / sorry / please
+    [/\bthank you\b/g, "tank u"],
+    [/\bthanks\b/g, "tysm"],
     [/\byou'?re\b/g, "ur"],
     [/\byour\b/g, "ur"],
     [/\byou\b/g, "u"],
+    [/\bsorry\b/g, "sowwy"],
+    [/\bplease\b/g, "pwease"],
+    // e-girl words
+    [/\blove\b/g, "wuv"],
+    [/\bloves\b/g, "wuvs"],
+    [/\b(?:little|small)\b/g, "smol"],
+    [/\bcute\b/g, "cyute"],
+    [/\bpretty\b/g, "pwetty"],
+    [/\bfriends\b/g, "fwens"],
+    [/\bfriend\b/g, "fwen"],
+    [/\bwhatever\b/g, "watevs"],
+    [/\bwhat\b/g, "wat"],
+    [/\bthis\b/g, "dis"],
+    [/\bthat\b/g, "dat"],
+    [/\bthe\b/g, "da"],
+    [/\bwith\b/g, "wif"],
+    [/\byes\b/g, "yesh"],
+    [/\bno\b/g, "nu"],
+    [/\bgood\b/g, "gud"],
+    [/\bstupid\b/g, "stoopid"],
+    [/\bhugs?\b/g, "huggies"],
+    [/\bok(?:ay)?\b/g, "okie"],
+    [/\bprobably\b/g, "prolly"],
+    [/\bbecause\b/g, "bc"],
+    // cat boy
+    [/\b(?:tired|sleepy)\b/g, "eepy"],
+    [/\bsleep(ing)?\b/g, "eep$1"],
+    [/\bcats\b/g, "kitties"],
+    [/\bcat\b/g, "kitty"],
+    [/\bperfect\b/g, "purrfect"],
+    [/\bawesome\b/g, "pawsome"],
+    [/\bfor real\b/g, "fur real"],
+    // stretchy
+    [/\bso\b/g, "soo"],
+    [/\bomg\b/g, "omgg"],
 ];
 
 const FACES = [":3", ":3", ":3", "mrrp", "mrrp", "nya~", "meow", "mrow~", "x3", ">w<", "=^.^="];
