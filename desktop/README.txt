@@ -1,18 +1,18 @@
-UWUIFIER - a Vencord plugin
+UWUIFIER (fm mode) - a Vencord plugin
 ===========================
-Everything you send on Discord gets turned into owo/uwu speak the moment you hit enter.
+Everything you send on Discord gets turned into femboy speak the moment you hit enter.
 Pings, links, `code`, :emojis: and @everyone are left alone so they still work.
 
-  "Hello there, I really love this game!"  ->  "hewwo thewe, I weawwy wuv dis g-game! >w<"
+  "Hello there, I am so tired. Thank you friends!"  ->  "hiii there, i am so eepy~ tysm besties! :3"
 
 ON/OFF
-  - Pink "uwu" button in the chat bar (red line through it = off)
+  - Pink "fm" button in the chat bar (red line through it = off)
   - Ctrl+Shift+U
   - Settings > Plugins > Uwuifier
 
 SETTINGS (cog icon on the plugin)
-  - Swear words: cute-ify (fuck -> fwick, shit -> poopy) / leave as-is / censor (f***)
-  - Stutter chance, face chance (:3, >w<, nyaa~ ...), uwuify edits too
+  - Swear words: cute-ify (fuck -> frick, shit -> shoot) / leave as-is / censor (f***)
+  - Stutter chance, face chance (:3, mrrp, nya~ ...), change edits too
 
 INSTALL
   Custom plugins only work on a Vencord built from source, so normal Vencord can't just load this file.

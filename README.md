@@ -1,6 +1,7 @@
 # Uwuifier
 
-Turns everything you send on Discord into owo/uwu speak.
+Turns everything you send on Discord into femboy speak (hiii, eepy, :3).
+The text rules live in `core/engine.js`; `node scripts/sync-engine.mjs` copies them into all three versions.
 
 - `desktop/`: Vencord plugin plus a one-click Windows installer. See `desktop/README.txt`.
 - `mobile/`: the same thing for the Discord phone app (Kettu / Revenge / other

@@ -1,6 +1,6 @@
 # Uwuifier for phone
 
-Same plugin as the desktop one: everything you send gets uwuified when you hit send.
+Same plugin as the desktop one: everything you send gets turned into femboy speak when you hit send.
 Pings, links, `code`, :emojis: and @everyone are left alone.
 
 ## The catch
@@ -38,14 +38,16 @@ point at the folder holding `manifest.json` and `index.js`, ending in `/`.
 
 There's no chat bar button on mobile, so:
 
-- `/uwutoggle`: turn auto-uwuify on or off (default on)
-- `/uwu text:<message>`: send one uwuified message, even while auto mode is off
-- Plugin settings: on/off, uwuify edits, swear mode (cute-ify / keep / censor),
+- `/fmtoggle`: turn fm mode on or off (default on)
+- `/fm text:<message>`: send one femboy-speak message, even while fm mode is off
+- Plugin settings: on/off, change edits, swear mode (cute-ify / keep / censor),
   stutter chance, face chance
 
 ## Editing it
 
-`index.js` is plain JavaScript with no build step. After any change run
+The text rules live in `core/engine.js`. After changing them, or `index.js`, run
+
+    node scripts/sync-engine.mjs   # copies core/engine.js into all three versions
 
     node scripts/update-hash.mjs   # the app only re-downloads when the hash changes
     node scripts/test-mobile.mjs   # loads it like the app does and checks the patches

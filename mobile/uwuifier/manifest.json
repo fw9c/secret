@@ -1,6 +1,6 @@
 {
     "name": "Uwuifier",
-    "description": "Turns evewything yuw send into owo/uwu speak >w< (toggle with /uwutoggle)",
+    "description": "turns everything u send into femboy speak :3 (toggle with /fmtoggle)",
     "authors": [
         {
             "name": "you",
@@ -11,5 +11,5 @@
     "vendetta": {
         "icon": "ic_message_edit"
     },
-    "hash": "a6eba08a66f909a21497bd540c9cecae53bfba80c8d348c75736cb2ff9c063cf"
+    "hash": "ff8f8118e73332a5b96a218f2e23f15b22ffb476ac69c9891a89304ad902fb36"
 }

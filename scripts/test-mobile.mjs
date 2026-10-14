@@ -33,36 +33,38 @@ const raw = (0, eval)(`vendetta=>{return ${js}}`)(fake);
 const p = raw?.default ?? raw;
 assert.equal(typeof p.onLoad, "function", "eval returned no plugin object (ASI?)");
 p.onLoad();
-assert.deepEqual(cmds.map(c => c.name).sort(), ["uwu", "uwutoggle"]);
+assert.deepEqual(cmds.map(c => c.name).sort(), ["fm", "fmtoggle"]);
 
 const store = fake.plugin.storage;
 store.stutter = 0; store.faces = 0;
+Math.random = () => 0.99; // full stops get dropped rather than turned into ~
 
 const send = c => { const m = { content: c }; MessageActions.sendMessage("1", m); return m.content; };
-assert.equal(send("Hello there, I really love this game!"), "hewwo dewe, I weawwy wuv dis game!".replace("dewe", "thewe"));
-assert.equal(send("fuck this https://example.com/really <@123> :heart: lol"), "fwick dis https://example.com/really <@123> :heart: lol");
-assert.equal(send("`real code` stays"), "`real code` stays");
+assert.equal(send("Hello there, I really love this game!"), "hiii there, i really luv this game!");
+assert.equal(send("Fuck this https://example.com/Really <@123> :Heart: lol"), "frick this https://example.com/Really <@123> :Heart: lol");
+assert.equal(send("`Real Code` stays"), "`Real Code` stays");
+assert.equal(send("Thank you, I am tired. Goodnight friends"), "tysm, i am eepy nini besties");
 
 const edit = c => { const m = { content: c }; MessageActions.editMessage("1", "2", m); return m.content; };
-assert.equal(edit("really"), "weawwy");
+assert.equal(edit("Hello"), "hiii");
 store.editsToo = false;
-assert.equal(edit("really"), "really");
+assert.equal(edit("Hello"), "Hello");
 
-cmds.find(c => c.name === "uwutoggle").execute([], {});
+cmds.find(c => c.name === "fmtoggle").execute([], {});
 assert.equal(store.active, false);
-assert.equal(send("really"), "really");
+assert.equal(send("Hello"), "Hello");
 
-// /uwu works while off, and isn't double-uwuified when on
-const out = cmds.find(c => c.name === "uwu").execute([{ name: "text", value: "really", type: 3 }], {});
-assert.equal(out.content, "weawwy");
+// /fm works while off, and is not changed twice when on
+const out = cmds.find(c => c.name === "fm").execute([{ name: "text", value: "Hello", type: 3 }], {});
+assert.equal(out.content, "hiii");
 store.active = true;
-const out2 = cmds.find(c => c.name === "uwu").execute([{ name: "text", value: "hello", type: 3 }], {});
-assert.equal(send(out2.content), "hewwo");
+const out2 = cmds.find(c => c.name === "fm").execute([{ name: "text", value: "I love you", type: 3 }], {});
+assert.equal(send(out2.content), "i luv u");
 
 store.swears = "censor";
 assert.equal(send("shit"), "s***");
 
 p.onUnload();
 assert.equal(cmds.length, 0);
-assert.equal(send("really"), "really", "patches not removed");
+assert.equal(send("Hello"), "Hello", "patches not removed");
 console.log("all mobile plugin checks passed");

@@ -1,6 +1,6 @@
 # Uwuifier for Discord in a browser (no APK, no Vencord)
 
-A userscript that uwuifies messages as they're sent to Discord. Works on a
+A userscript that turns your messages into femboy speak as they're sent to Discord. Works on a
 phone with stuff straight from the Play Store.
 
 ## Phone setup
@@ -13,7 +13,7 @@ phone with stuff straight from the Play Store.
 4. Go to `discord.com/app` and log in. If it keeps nagging you to get the app,
    turn on "Desktop site" in the Firefox menu.
 
-Pink **uwu** tab on the right edge: **tap** to turn it on/off, **hold for
+Pink **fm** tab on the right edge: **tap** to turn it on/off, **hold for
 3 seconds** for settings (edits, stutter and face sliders, swear mode). They save automatically and survive updates. Faded and crossed out tab = off. On a keyboard, Ctrl+Shift+U toggles.
 
 ## Limits
