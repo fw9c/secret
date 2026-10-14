@@ -98,8 +98,6 @@ const WORDS = [
     [/\bfriend\b/g, "fwen"],
     [/\bwhatever\b/g, "watevs"],
     [/\bwhat\b/g, "wat"],
-    [/\bthis\b/g, "dis"],
-    [/\bthat\b/g, "dat"],
     [/\bwith\b/g, "wif"],
     [/\byes\b/g, "yesh"],
     [/\bno\b/g, "nu"],

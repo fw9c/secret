@@ -40,11 +40,11 @@ store.stutter = 0; store.faces = 0;
 Math.random = () => 0.99; // full stops get dropped rather than turned into ~
 
 const send = c => { const m = { content: c }; MessageActions.sendMessage("1", m); return m.content; };
-assert.equal(send("Hello there, I really love this game!"), "hewwo there, i really wuv dis game!!");
-assert.equal(send("Fuck this https://example.com/Really <@123> :Heart: lol"), "fuck dis https://example.com/Really <@123> :Heart: lol");
+assert.equal(send("Hello there, I really love this game!"), "hewwo there, i really wuv this game!!");
+assert.equal(send("Fuck this https://example.com/Really <@123> :Heart: lol"), "fuck this https://example.com/Really <@123> :Heart: lol");
 assert.equal(send("`Real Code` stays"), "`Real Code` stays");
 assert.equal(send("Thank you, I am tired. Is it OK?"), "tank u, i am eepy is it okie?");
-assert.equal(send("Sorry, what is that? My cat is perfect"), "sowwy, wat is dat? my kitty is purrfect");
+assert.equal(send("Sorry, what is that? My cat is perfect"), "sowwy, wat is that? my kitty is purrfect");
 
 const edit = c => { const m = { content: c }; MessageActions.editMessage("1", "2", m); return m.content; };
 assert.equal(edit("Hello"), "hewwo");
