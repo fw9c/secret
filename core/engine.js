@@ -26,7 +26,6 @@ const WORDS = [
     [/\bhi+\b/g, "hiii"],
     [/\bhe+y+\b/g, "heyyy"],
     [/\bbye+\b/g, "bai bai"],
-    [/\bgood ?night\b/g, "nini"],
     [/\bgood ?morning\b/g, "mowning"],
     // you / thanks / sorry / please
     [/\bthank you\b/g, "tank u"],
@@ -48,7 +47,6 @@ const WORDS = [
     [/\bwhat\b/g, "wat"],
     [/\bthis\b/g, "dis"],
     [/\bthat\b/g, "dat"],
-    [/\bthe\b/g, "da"],
     [/\bwith\b/g, "wif"],
     [/\byes\b/g, "yesh"],
     [/\bno\b/g, "nu"],

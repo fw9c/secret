@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Uwuifier for Discord
 // @namespace    https://github.com/fw9c/secret
-// @version      2.2.0
+// @version      2.2.1
 // @description  turns everything u send on Discord web into cat boy speak :3
 // @match        https://discord.com/*
 // @match        https://ptb.discord.com/*
@@ -78,7 +78,6 @@
         [/\bhi+\b/g, "hiii"],
         [/\bhe+y+\b/g, "heyyy"],
         [/\bbye+\b/g, "bai bai"],
-        [/\bgood ?night\b/g, "nini"],
         [/\bgood ?morning\b/g, "mowning"],
         // you / thanks / sorry / please
         [/\bthank you\b/g, "tank u"],
@@ -100,7 +99,6 @@
         [/\bwhat\b/g, "wat"],
         [/\bthis\b/g, "dis"],
         [/\bthat\b/g, "dat"],
-        [/\bthe\b/g, "da"],
         [/\bwith\b/g, "wif"],
         [/\byes\b/g, "yesh"],
         [/\bno\b/g, "nu"],
