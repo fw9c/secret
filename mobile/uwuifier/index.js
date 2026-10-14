@@ -1,7 +1,7 @@
 (() => {
     /*
      * Uwuifier for Discord mobile, a Vendetta-style plugin (works in Bunny forks
-     * like Kettu / Revenge). Same femboy-speak rules as the desktop Vencord plugin.
+     * like Kettu / Revenge). Same cat boy speak rules as the desktop Vencord plugin.
      *
      * Plain JS on purpose: no build step, the mod evals this file as-is.
      * The whole file is one expression returning { onLoad, onUnload, settings }.
@@ -13,13 +13,19 @@
     const store = plugin.storage;
 
     // ---- settings defaults -------------------------------------------------
-    const DEFAULTS = { active: true, stutter: 0.1, faces: 0.5, editsToo: true, swears: "cute" };
+    const DEFAULTS = { active: true, stutter: 0, faces: 0.5, editsToo: true, swears: "keep" };
     for (const k in DEFAULTS) if (store[k] === undefined) store[k] = DEFAULTS[k];
+    // v2 (cat boy) switched the defaults to no stutter and swears left alone.
+    if (store.v !== 2) {
+        store.v = 2;
+        store.stutter = DEFAULTS.stutter;
+        store.swears = DEFAULTS.swears;
+    }
 
     // ---- text engine (generated from core/engine.js, edit it there) ----
-    // Femboy speak: all lowercase, stretched words, eepy, kitty sounds and :3.
-    // No baby-talk r/l -> w, that's the e-girl tell.
-    // femify(text, { swears: "cute" | "keep" | "censor", stutter: 0..1, faces: 0..1 })
+    // Cat boy speak: lowercase, a few stretched words, !! and ~, and kitty
+    // sounds (mrrp, nya~, meow) where full stops used to be.
+    // femify(text, { swears: "keep" | "cute" | "censor", stutter: 0..1, faces: 0..1 })
 
     // Stems, so "fucking", "bullshit", "motherfucker" etc. are caught too.
     const SWEARS = [
@@ -37,35 +43,20 @@
         [/\bwtf\b/g, "wth"],
     ];
 
-    // Runs on lowercased text, so no /i needed.
+    // Light touch on purpose. Runs on lowercased text, so no /i needed.
     const WORDS = [
         [/\b(?:hi+|hello+)\b/g, "hiii"],
         [/\bhe+y+\b/g, "heyyy"],
-        [/\bbye+\b/g, "byeee"],
-        [/\bgood ?night\b/g, "nini"],
-        [/\bthank you\b|\bthanks\b/g, "tysm"],
+        [/\bbye+\b/g, "byee"],
+        [/\bso\b/g, "soo"],
+        [/\bomg\b/g, "omgg"],
+        [/\bplease\b/g, "pls"],
         [/\byou'?re\b/g, "ur"],
         [/\byour\b/g, "ur"],
         [/\byou\b/g, "u"],
-        [/\bbecause\b/g, "bc"],
-        [/\bplease\b/g, "pleaseee"],
-        [/\bsorry\b/g, "sorryyy"],
-        [/\b(?:tired|sleepy)\b/g, "eepy"],
-        [/\bsleep(ing|y)?\b/g, "eep$1"],
-        [/\bcats\b/g, "kitties"],
-        [/\bcat\b/g, "kitty"],
-        [/\blove\b/g, "luv"],
-        [/\bfriends\b/g, "besties"],
-        [/\bfriend\b/g, "bestie"],
-        [/\bha(?:ha)+\b/g, "hehe"],
-        [/\byes\b/g, "yesss"],
-        [/\bok(?:ay)?\b/g, "okie"],
-        [/\bomg\b/g, "omggg"],
-        [/\bcute\b/g, "cuteee"],
-        [/\bsilly\b/g, "sillyyy"],
     ];
 
-    const FACES = [":3", ":3", ":3c", "x3", ">w<", ">///<", "^^", "^-^", "mrrp", "mrow~", "nya~", "meow", "hehe~", "awawa", "=^.^="];
+    const FACES = [":3", ":3", ":3", "mrrp", "mrrp", "nya~", "meow", "mrow~", "x3", ">w<", "=^.^="];
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
     // Bits of a message that must survive untouched: code, links, mentions,
@@ -92,14 +83,17 @@
                 Math.random() < opts.stutter ? `${pre}${ch}-${ch}` : m);
         }
 
-        // Nobody types full stops like this: drop them or turn them into ~
-        out = out.replace(/(\w)\.(\s|$)/g, (m, ch, space) => Math.random() < 0.5 ? `${ch}~${space}` : `${ch}${space}`);
+        // a lone ! becomes !!
+        out = out.replace(/(^|[^!])!(?!!)/g, "$1!!");
 
-        if (opts.faces > 0) {
-            // after ! ? or ~ at the end of a sentence
-            out = out.replace(/([!?~]+)(\s+|$)/g, (m, end, space) =>
-                Math.random() < opts.faces ? `${end} ${pick(FACES)}${space}` : m);
-        }
+        // commas sometimes turn into ~
+        out = out.replace(/(\w),(\s)/g, (m, ch, space) => Math.random() < opts.faces * 0.5 ? `${ch}~${space}` : m);
+
+        // Sentence ends: full stops are dropped, and a kitty sound might go there instead.
+        out = out.replace(/(\w)([.!?]+)(\s+|$)/g, (m, ch, punct, space) => {
+            const end = punct === "." ? "" : punct;
+            return Math.random() < opts.faces ? `${ch}${end} ${pick(FACES)}${space}` : `${ch}${end}${space}`;
+        });
 
         return out;
     }
@@ -116,9 +110,11 @@
         }
         result += femText(content.slice(last), opts);
 
-        // always end on a face if nothing got added and the message has words in it
+        // end on a face if nothing got added and the message has words in it
         if (opts.faces > 0 && /[a-z]/i.test(result) && !FACES.some(f => result.includes(f)) && Math.random() < opts.faces) {
-            result = result.trimEnd() + " " + pick(FACES);
+            result = result.trimEnd();
+            if (/[a-z]$/.test(result) && Math.random() < 0.5) result += "~";
+            result += " " + pick(FACES);
         }
         return result;
     }
@@ -187,8 +183,8 @@
         unpatches.push(commands.registerCommand({
             name: "fm",
             displayName: "fm",
-            description: "Send one femboy-speak message (works even when fm mode is off)",
-            displayDescription: "Send one femboy-speak message (works even when fm mode is off)",
+            description: "Send one cat boy speak message (works even when fm mode is off)",
+            displayDescription: "Send one cat boy speak message (works even when fm mode is off)",
             options: [{
                 name: "text",
                 displayName: "text",
@@ -220,8 +216,8 @@
     const h = React.createElement;
     const CHANCES = [["Off", 0], ["A little", 0.1], ["Some", 0.25], ["Lots", 0.5], ["Always", 1]];
     const SWEAR_MODES = [
-        ["cute", "Cute-ify them (fuck → frick, shit → shoot, hell → heck)"],
         ["keep", "Leave them as-is"],
+        ["cute", "Cute-ify them (fuck → frick, shit → shoot, hell → heck)"],
         ["censor", "Censor them (f**k)"],
     ];
 

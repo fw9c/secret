@@ -1,6 +1,6 @@
 # Uwuifier for Discord in a browser (no APK, no Vencord)
 
-A userscript that turns your messages into femboy speak as they're sent to Discord. Works on a
+A userscript that turns your messages into cat boy speak as they're sent to Discord. Works on a
 phone with stuff straight from the Play Store.
 
 ## Phone setup

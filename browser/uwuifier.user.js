@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Uwuifier for Discord
 // @namespace    https://github.com/fw9c/secret
-// @version      2.0.0
-// @description  turns everything u send on Discord web into femboy speak :3
+// @version      2.1.0
+// @description  turns everything u send on Discord web into cat boy speak :3
 // @match        https://discord.com/*
 // @match        https://ptb.discord.com/*
 // @match        https://canary.discord.com/*
@@ -24,8 +24,8 @@
     // ---- settings (change them from the pink "fm" tab) -------------------------
     const DEFAULTS = {
         active: true,
-        swears: "cute",   // "cute" (fuck -> frick), "keep", or "censor" (f***)
-        stutter: 0.1,     // 0 to 1
+        swears: "keep",   // "keep", "cute" (fuck -> frick), or "censor" (f***)
+        stutter: 0,       // 0 to 1
         faces: 0.5,       // 0 to 1
         editsToo: true,   // change edited messages too
     };
@@ -41,10 +41,18 @@
         try { LS && LS.setItem(KEY, JSON.stringify(cfg)); } catch { }
     }
 
+    // v2 (cat boy) switched the defaults to no stutter and swears left alone.
+    if (cfg.v !== 2) {
+        cfg.v = 2;
+        cfg.stutter = DEFAULTS.stutter;
+        cfg.swears = DEFAULTS.swears;
+        save();
+    }
+
     // ---- text engine (generated from core/engine.js, edit it there) ----
-    // Femboy speak: all lowercase, stretched words, eepy, kitty sounds and :3.
-    // No baby-talk r/l -> w, that's the e-girl tell.
-    // femify(text, { swears: "cute" | "keep" | "censor", stutter: 0..1, faces: 0..1 })
+    // Cat boy speak: lowercase, a few stretched words, !! and ~, and kitty
+    // sounds (mrrp, nya~, meow) where full stops used to be.
+    // femify(text, { swears: "keep" | "cute" | "censor", stutter: 0..1, faces: 0..1 })
 
     // Stems, so "fucking", "bullshit", "motherfucker" etc. are caught too.
     const SWEARS = [
@@ -62,35 +70,20 @@
         [/\bwtf\b/g, "wth"],
     ];
 
-    // Runs on lowercased text, so no /i needed.
+    // Light touch on purpose. Runs on lowercased text, so no /i needed.
     const WORDS = [
         [/\b(?:hi+|hello+)\b/g, "hiii"],
         [/\bhe+y+\b/g, "heyyy"],
-        [/\bbye+\b/g, "byeee"],
-        [/\bgood ?night\b/g, "nini"],
-        [/\bthank you\b|\bthanks\b/g, "tysm"],
+        [/\bbye+\b/g, "byee"],
+        [/\bso\b/g, "soo"],
+        [/\bomg\b/g, "omgg"],
+        [/\bplease\b/g, "pls"],
         [/\byou'?re\b/g, "ur"],
         [/\byour\b/g, "ur"],
         [/\byou\b/g, "u"],
-        [/\bbecause\b/g, "bc"],
-        [/\bplease\b/g, "pleaseee"],
-        [/\bsorry\b/g, "sorryyy"],
-        [/\b(?:tired|sleepy)\b/g, "eepy"],
-        [/\bsleep(ing|y)?\b/g, "eep$1"],
-        [/\bcats\b/g, "kitties"],
-        [/\bcat\b/g, "kitty"],
-        [/\blove\b/g, "luv"],
-        [/\bfriends\b/g, "besties"],
-        [/\bfriend\b/g, "bestie"],
-        [/\bha(?:ha)+\b/g, "hehe"],
-        [/\byes\b/g, "yesss"],
-        [/\bok(?:ay)?\b/g, "okie"],
-        [/\bomg\b/g, "omggg"],
-        [/\bcute\b/g, "cuteee"],
-        [/\bsilly\b/g, "sillyyy"],
     ];
 
-    const FACES = [":3", ":3", ":3c", "x3", ">w<", ">///<", "^^", "^-^", "mrrp", "mrow~", "nya~", "meow", "hehe~", "awawa", "=^.^="];
+    const FACES = [":3", ":3", ":3", "mrrp", "mrrp", "nya~", "meow", "mrow~", "x3", ">w<", "=^.^="];
     const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
     // Bits of a message that must survive untouched: code, links, mentions,
@@ -117,14 +110,17 @@
                 Math.random() < opts.stutter ? `${pre}${ch}-${ch}` : m);
         }
 
-        // Nobody types full stops like this: drop them or turn them into ~
-        out = out.replace(/(\w)\.(\s|$)/g, (m, ch, space) => Math.random() < 0.5 ? `${ch}~${space}` : `${ch}${space}`);
+        // a lone ! becomes !!
+        out = out.replace(/(^|[^!])!(?!!)/g, "$1!!");
 
-        if (opts.faces > 0) {
-            // after ! ? or ~ at the end of a sentence
-            out = out.replace(/([!?~]+)(\s+|$)/g, (m, end, space) =>
-                Math.random() < opts.faces ? `${end} ${pick(FACES)}${space}` : m);
-        }
+        // commas sometimes turn into ~
+        out = out.replace(/(\w),(\s)/g, (m, ch, space) => Math.random() < opts.faces * 0.5 ? `${ch}~${space}` : m);
+
+        // Sentence ends: full stops are dropped, and a kitty sound might go there instead.
+        out = out.replace(/(\w)([.!?]+)(\s+|$)/g, (m, ch, punct, space) => {
+            const end = punct === "." ? "" : punct;
+            return Math.random() < opts.faces ? `${ch}${end} ${pick(FACES)}${space}` : `${ch}${end}${space}`;
+        });
 
         return out;
     }
@@ -141,9 +137,11 @@
         }
         result += femText(content.slice(last), opts);
 
-        // always end on a face if nothing got added and the message has words in it
+        // end on a face if nothing got added and the message has words in it
         if (opts.faces > 0 && /[a-z]/i.test(result) && !FACES.some(f => result.includes(f)) && Math.random() < opts.faces) {
-            result = result.trimEnd() + " " + pick(FACES);
+            result = result.trimEnd();
+            if (/[a-z]$/.test(result) && Math.random() < 0.5) result += "~";
+            result += " " + pick(FACES);
         }
         return result;
     }
@@ -285,7 +283,7 @@
         const swearRow = el("label", { display: "block", margin: "10px 0 0" });
         swearRow.appendChild(el("div", { marginBottom: "4px" }, { textContent: "Swear words" }));
         const swears = el("select", { width: "100%", padding: "4px", background: "#1e1f22", color: "#f2f3f5", border: "1px solid #555", borderRadius: "6px" });
-        for (const [value, text] of [["cute", "Cute-ify (fuck → frick)"], ["keep", "Leave as-is"], ["censor", "Censor (f***)"]])
+        for (const [value, text] of [["keep", "Leave as-is"], ["cute", "Cute-ify (fuck → frick)"], ["censor", "Censor (f***)"]])
             swears.appendChild(el("option", {}, { value, textContent: text }));
         swears.addEventListener("change", () => { cfg.swears = swears.value; save(); });
         swearRow.appendChild(swears);

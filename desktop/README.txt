@@ -1,9 +1,10 @@
 UWUIFIER (fm mode) - a Vencord plugin
 ===========================
-Everything you send on Discord gets turned into femboy speak the moment you hit enter.
+Everything you send on Discord gets turned into cat boy speak the moment you hit enter.
 Pings, links, `code`, :emojis: and @everyone are left alone so they still work.
 
-  "Hello there, I am so tired. Thank you friends!"  ->  "hiii there, i am so eepy~ tysm besties! :3"
+  "Hello there, I am so tired. Thank you guys, see you tomorrow!"
+    ->  "hiii there~ i am soo tired mrrp thank u guys, see u tomorrow!! nya~"
 
 ON/OFF
   - Pink "fm" button in the chat bar (red line through it = off)
@@ -11,7 +12,7 @@ ON/OFF
   - Settings > Plugins > Uwuifier
 
 SETTINGS (cog icon on the plugin)
-  - Swear words: cute-ify (fuck -> frick, shit -> shoot) / leave as-is / censor (f***)
+  - Swear words: leave as-is (default) / cute-ify (fuck -> frick) / censor (f***)
   - Stutter chance, face chance (:3, mrrp, nya~ ...), change edits too
 
 INSTALL

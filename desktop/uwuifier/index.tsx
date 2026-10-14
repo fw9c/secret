@@ -1,6 +1,6 @@
 /*
  * Uwuifier, a Vencord user plugin.
- * Rewrites everything you send (and edit) into femboy speak (hiii, eepy, :3),
+ * Rewrites everything you send (and edit) into cat boy speak (hiii, mrrp, :3),
  * with an "fm" toggle in the chat bar and a Ctrl+Shift+U hotkey.
  */
 
@@ -24,12 +24,12 @@ const settings = definePluginSettings({
         type: OptionType.SLIDER,
         description: "Chance a word gets a s-s-stutter",
         markers: [0, 0.1, 0.2, 0.3, 0.5],
-        default: 0.1,
+        default: 0,
         stickToMarkers: false,
     },
     faces: {
         type: OptionType.SLIDER,
-        description: "Chance a face (:3, mrrp, nya~, ...) gets added after a sentence",
+        description: "Chance of a kitty sound or face (:3, mrrp, nya~, ...) at the end of a sentence",
         markers: [0, 0.25, 0.5, 0.75, 1],
         default: 0.5,
         stickToMarkers: false,
@@ -43,17 +43,17 @@ const settings = definePluginSettings({
         type: OptionType.SELECT,
         description: "What happens to swear words",
         options: [
-            { label: "Cute-ify them (fuck → frick, shit → shoot, hell → heck)", value: "cute", default: true },
-            { label: "Leave them as-is", value: "keep" },
+            { label: "Leave them as-is", value: "keep", default: true },
+            { label: "Cute-ify them (fuck → frick, shit → shoot, hell → heck)", value: "cute" },
             { label: "Censor them (f**k)", value: "censor" },
         ],
     },
 });
 
 // ---- text engine (generated from core/engine.js, edit it there) ----
-// Femboy speak: all lowercase, stretched words, eepy, kitty sounds and :3.
-// No baby-talk r/l -> w, that's the e-girl tell.
-// femify(text, { swears: "cute" | "keep" | "censor", stutter: 0..1, faces: 0..1 })
+// Cat boy speak: lowercase, a few stretched words, !! and ~, and kitty
+// sounds (mrrp, nya~, meow) where full stops used to be.
+// femify(text, { swears: "keep" | "cute" | "censor", stutter: 0..1, faces: 0..1 })
 
 // Stems, so "fucking", "bullshit", "motherfucker" etc. are caught too.
 const SWEARS = [
@@ -71,35 +71,20 @@ const SWEARS = [
     [/\bwtf\b/g, "wth"],
 ];
 
-// Runs on lowercased text, so no /i needed.
+// Light touch on purpose. Runs on lowercased text, so no /i needed.
 const WORDS = [
     [/\b(?:hi+|hello+)\b/g, "hiii"],
     [/\bhe+y+\b/g, "heyyy"],
-    [/\bbye+\b/g, "byeee"],
-    [/\bgood ?night\b/g, "nini"],
-    [/\bthank you\b|\bthanks\b/g, "tysm"],
+    [/\bbye+\b/g, "byee"],
+    [/\bso\b/g, "soo"],
+    [/\bomg\b/g, "omgg"],
+    [/\bplease\b/g, "pls"],
     [/\byou'?re\b/g, "ur"],
     [/\byour\b/g, "ur"],
     [/\byou\b/g, "u"],
-    [/\bbecause\b/g, "bc"],
-    [/\bplease\b/g, "pleaseee"],
-    [/\bsorry\b/g, "sorryyy"],
-    [/\b(?:tired|sleepy)\b/g, "eepy"],
-    [/\bsleep(ing|y)?\b/g, "eep$1"],
-    [/\bcats\b/g, "kitties"],
-    [/\bcat\b/g, "kitty"],
-    [/\blove\b/g, "luv"],
-    [/\bfriends\b/g, "besties"],
-    [/\bfriend\b/g, "bestie"],
-    [/\bha(?:ha)+\b/g, "hehe"],
-    [/\byes\b/g, "yesss"],
-    [/\bok(?:ay)?\b/g, "okie"],
-    [/\bomg\b/g, "omggg"],
-    [/\bcute\b/g, "cuteee"],
-    [/\bsilly\b/g, "sillyyy"],
 ];
 
-const FACES = [":3", ":3", ":3c", "x3", ">w<", ">///<", "^^", "^-^", "mrrp", "mrow~", "nya~", "meow", "hehe~", "awawa", "=^.^="];
+const FACES = [":3", ":3", ":3", "mrrp", "mrrp", "nya~", "meow", "mrow~", "x3", ">w<", "=^.^="];
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
 
 // Bits of a message that must survive untouched: code, links, mentions,
@@ -126,14 +111,17 @@ function femText(text, opts) {
             Math.random() < opts.stutter ? `${pre}${ch}-${ch}` : m);
     }
 
-    // Nobody types full stops like this: drop them or turn them into ~
-    out = out.replace(/(\w)\.(\s|$)/g, (m, ch, space) => Math.random() < 0.5 ? `${ch}~${space}` : `${ch}${space}`);
+    // a lone ! becomes !!
+    out = out.replace(/(^|[^!])!(?!!)/g, "$1!!");
 
-    if (opts.faces > 0) {
-        // after ! ? or ~ at the end of a sentence
-        out = out.replace(/([!?~]+)(\s+|$)/g, (m, end, space) =>
-            Math.random() < opts.faces ? `${end} ${pick(FACES)}${space}` : m);
-    }
+    // commas sometimes turn into ~
+    out = out.replace(/(\w),(\s)/g, (m, ch, space) => Math.random() < opts.faces * 0.5 ? `${ch}~${space}` : m);
+
+    // Sentence ends: full stops are dropped, and a kitty sound might go there instead.
+    out = out.replace(/(\w)([.!?]+)(\s+|$)/g, (m, ch, punct, space) => {
+        const end = punct === "." ? "" : punct;
+        return Math.random() < opts.faces ? `${ch}${end} ${pick(FACES)}${space}` : `${ch}${end}${space}`;
+    });
 
     return out;
 }
@@ -150,9 +138,11 @@ function femify(content, opts) {
     }
     result += femText(content.slice(last), opts);
 
-    // always end on a face if nothing got added and the message has words in it
+    // end on a face if nothing got added and the message has words in it
     if (opts.faces > 0 && /[a-z]/i.test(result) && !FACES.some(f => result.includes(f)) && Math.random() < opts.faces) {
-        result = result.trimEnd() + " " + pick(FACES);
+        result = result.trimEnd();
+        if (/[a-z]$/.test(result) && Math.random() < 0.5) result += "~";
+        result += " " + pick(FACES);
     }
     return result;
 }
@@ -203,7 +193,7 @@ const FmChatBarButton: ChatBarButtonFactory = ({ isMainChat }) => {
 
 export default definePlugin({
     name: "Uwuifier",
-    description: "turns everything u send into femboy speak :3 (toggle with the fm chat bar button or Ctrl+Shift+U)",
+    description: "turns everything u send into cat boy speak :3 (toggle with the fm chat bar button or Ctrl+Shift+U)",
     authors: [{ name: "you", id: 0n }],
     settings,
 

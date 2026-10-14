@@ -1,6 +1,6 @@
 {
     "name": "Uwuifier",
-    "description": "turns everything u send into femboy speak :3 (toggle with /fmtoggle)",
+    "description": "turns everything u send into cat boy speak :3 (toggle with /fmtoggle)",
     "authors": [
         {
             "name": "you",
@@ -11,5 +11,5 @@
     "vendetta": {
         "icon": "ic_message_edit"
     },
-    "hash": "ff8f8118e73332a5b96a218f2e23f15b22ffb476ac69c9891a89304ad902fb36"
+    "hash": "d53621b6bbd6b221ea73ed4760428147e91c189e975dd741e596658b39ea86fb"
 }

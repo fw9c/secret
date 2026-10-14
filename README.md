@@ -1,6 +1,6 @@
 # Uwuifier
 
-Turns everything you send on Discord into femboy speak (hiii, eepy, :3).
+Turns everything you send on Discord into cat boy speak (hiii, mrrp, :3).
 The text rules live in `core/engine.js`; `node scripts/sync-engine.mjs` copies them into all three versions.
 
 - `desktop/`: Vencord plugin plus a one-click Windows installer. See `desktop/README.txt`.

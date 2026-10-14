@@ -1,6 +1,6 @@
 # Uwuifier for phone
 
-Same plugin as the desktop one: everything you send gets turned into femboy speak when you hit send.
+Same plugin as the desktop one: everything you send gets turned into cat boy speak when you hit send.
 Pings, links, `code`, :emojis: and @everyone are left alone.
 
 ## The catch
@@ -39,7 +39,7 @@ point at the folder holding `manifest.json` and `index.js`, ending in `/`.
 There's no chat bar button on mobile, so:
 
 - `/fmtoggle`: turn fm mode on or off (default on)
-- `/fm text:<message>`: send one femboy-speak message, even while fm mode is off
+- `/fm text:<message>`: send one cat boy speak message, even while fm mode is off
 - Plugin settings: on/off, change edits, swear mode (cute-ify / keep / censor),
   stutter chance, face chance
 

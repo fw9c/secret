@@ -40,10 +40,10 @@ store.stutter = 0; store.faces = 0;
 Math.random = () => 0.99; // full stops get dropped rather than turned into ~
 
 const send = c => { const m = { content: c }; MessageActions.sendMessage("1", m); return m.content; };
-assert.equal(send("Hello there, I really love this game!"), "hiii there, i really luv this game!");
-assert.equal(send("Fuck this https://example.com/Really <@123> :Heart: lol"), "frick this https://example.com/Really <@123> :Heart: lol");
+assert.equal(send("Hello there, I really love this game!"), "hiii there, i really love this game!!");
+assert.equal(send("Fuck this https://example.com/Really <@123> :Heart: lol"), "fuck this https://example.com/Really <@123> :Heart: lol");
 assert.equal(send("`Real Code` stays"), "`Real Code` stays");
-assert.equal(send("Thank you, I am tired. Goodnight friends"), "tysm, i am eepy nini besties");
+assert.equal(send("Thank you, I am tired. Is it OK?"), "thank u, i am tired is it ok?");
 
 const edit = c => { const m = { content: c }; MessageActions.editMessage("1", "2", m); return m.content; };
 assert.equal(edit("Hello"), "hiii");
@@ -59,7 +59,7 @@ const out = cmds.find(c => c.name === "fm").execute([{ name: "text", value: "Hel
 assert.equal(out.content, "hiii");
 store.active = true;
 const out2 = cmds.find(c => c.name === "fm").execute([{ name: "text", value: "I love you", type: 3 }], {});
-assert.equal(send(out2.content), "i luv u");
+assert.equal(send(out2.content), "i love u");
 
 store.swears = "censor";
 assert.equal(send("shit"), "s***");

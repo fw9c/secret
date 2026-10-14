@@ -35,7 +35,7 @@ const API = "https://discord.com/api/v9/channels/123";
 
 assert.equal(JSON.parse(xhr("POST", `${API}/messages`, JSON.stringify({ content: "Hello really <@1> https://x.com/LOL", nonce: "1" }))).content,
     "hiii really <@1> https://x.com/LOL");
-assert.equal(JSON.parse(xhr("PATCH", `${API}/messages/456`, JSON.stringify({ content: "Thank you" }))).content, "tysm");
+assert.equal(JSON.parse(xhr("PATCH", `${API}/messages/456`, JSON.stringify({ content: "Thank you" }))).content, "thank u");
 // other requests untouched
 assert.equal(xhr("POST", `${API}/typing`, '{"content":"really"}'), '{"content":"really"}');
 assert.equal(xhr("GET", `${API}/messages`, undefined), undefined);
@@ -43,7 +43,7 @@ assert.equal(xhr("POST", "https://discord.com/api/v9/interactions", '{"content":
 // attachments: FormData payload_json
 const fd = new FormData();
 fd.set("payload_json", JSON.stringify({ content: "My Cat" }));
-assert.equal(JSON.parse(xhr("POST", `${API}/messages`, fd).get("payload_json")).content, "my kitty");
+assert.equal(JSON.parse(xhr("POST", `${API}/messages`, fd).get("payload_json")).content, "my cat");
 // fetch path
 await window.fetch(`${API}/messages`, { method: "POST", body: '{"content":"Hello"}' });
 assert.equal(JSON.parse(fetched.at(-1).init.body).content, "hiii");
